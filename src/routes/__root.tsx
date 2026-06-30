@@ -1,4 +1,10 @@
-import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router"
+import {
+  HeadContent,
+  Scripts,
+  createRootRoute,
+  useRouterState,
+  Outlet,
+} from "@tanstack/react-router"
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 import { TanStackDevtools } from "@tanstack/react-devtools"
 
@@ -15,7 +21,7 @@ export const Route = createRootRoute({
         content: "width=device-width, initial-scale=1",
       },
       {
-        title: "TanStack Start Starter",
+        title: "Telerad Global",
       },
     ],
     links: [
@@ -34,14 +40,19 @@ export const Route = createRootRoute({
   shellComponent: RootDocument,
 })
 
-function RootDocument({ children }: { children: React.ReactNode }) {
+function RootDocument() {
+  const pathname = useRouterState({ select: (s) => s.location.pathname })
+  const isArabic = pathname.startsWith("/ar")
+  const lang = isArabic ? "ar" : "en"
+  const dir = isArabic ? "rtl" : "ltr"
+
   return (
-    <html lang="en">
+    <html lang={lang} dir={dir}>
       <head>
         <HeadContent />
       </head>
-      <body>
-        {children}
+      <body className={dir === "rtl" ? "font-cairo" : "font-sans"}>
+        <Outlet />
         <TanStackDevtools
           config={{
             position: "bottom-right",
